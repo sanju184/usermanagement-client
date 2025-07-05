@@ -1,0 +1,96 @@
+.main-container{
+    min-width: 300px;
+    max-width: 400px;
+    margin: 60px auto;
+    background-color: rgb(241, 234, 234);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+
+}
+
+ .login-text {  
+    text-align: center;
+ }
+
+.form-login{
+    display:flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 15px;
+}
+
+.input-field{
+    min-width: 280px;
+    min-height: 40px;
+    border-radius: 10px;
+    padding: 5px 8px;
+    font-size: 16px;
+    font-weight: 400px;
+     border: 1px solid #ccc;
+}
+
+.login-btn{
+    min-width: 100px;
+    padding: 12px 12px;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    font-weight: 400px;
+    border: none;
+    background-color: #007BFF;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+
+.error-text {
+ 
+  color: red;
+  font-size: 0.9rem;
+  margin: 5px 0 10px 0;
+}
+.popup-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 1000;
+  animation: fadeInOut 4s ease-in-out;
+  
+  text-align: center;
+  min-width: 250px;
+}
+
+
+.popup-message.success {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.popup-message.error {
+  background-color: #f44336;
+  color: #fff;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  10%, 90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
