@@ -1,19 +1,24 @@
-
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import Dashbord from './components/Dashbord.jsx';
+import Navbar from './components/Navbar.jsx';
+import User from './components/User.jsx';
 import Login from './pages/Login';
 import Register from './pages/Register';
-
-const App = ()=> {
+const App = () => {
   return (
-  <Router>
-      <Routes>
-        <Route path="/nfjkfjnv" element={<Login />} />
-        <Route path="/" element={<Register />} />
-      </Routes>
-    </Router>
- 
-  )
-}
+    <>
 
-export default App
+    <Navbar></Navbar>
+     
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/users" element={<User />} />
+        <Route path="/dashboard" element={<Dashbord />} />
+      </Routes>
+    </>
+  );
+};
+
+export default App;

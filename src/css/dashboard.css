@@ -1,0 +1,79 @@
+.dashboard-page {
+  padding: 20px;
+  background: #f9fafb;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #111827;
+}
+
+.dashboard-subtitle {
+  font-size: 16px;
+  color: #4b5563;
+  margin-bottom: 30px;
+}
+
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  min-width: 250px;
+  flex: 1;
+}
+
+.icon-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: white;
+  margin-right: 15px;
+}
+
+.icon-box.blue {
+  background-color: #3b82f6;
+}
+.icon-box.purple {
+  background-color: #8b5cf6;
+}
+.icon-box.green {
+  background-color: #22c55e;
+}
+.icon-box.orange {
+  background-color: #f97316;
+}
+
+.card-content h3 {
+  font-size: 15px;
+  margin: 0;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.card-content .value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.card-content .growth {
+  font-size: 14px;
+  color: #16a34a;
+  margin-left: 6px;
+}
