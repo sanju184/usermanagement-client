@@ -5,7 +5,11 @@
   background-color: #ffffff;
   padding: 12px 24px;
   border-bottom: 1px solid #e5e7eb;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  min-width: 280;
 }
 
 /* LEFT SECTION - LOGO AND BRAND */
@@ -23,7 +27,6 @@
   justify-content: center;
   border-radius: 8px;
   padding: 10px;
-  
 }
 
 .brand-name {
@@ -50,7 +53,6 @@
 
 /* Dashboard styled like button */
 .navbar-right a[href="/dashbord"] {
-
   color: #374151;
 }
 
@@ -79,7 +81,7 @@
   background-color: #f3f4f6;
   padding: 6px 12px;
   border-radius: 999px;
-   cursor: pointer;
+  cursor: pointer;
 }
 
 .profile-img {
@@ -95,7 +97,7 @@
 }
 .profile-dropdown {
   position: absolute;
-  top:70px;
+  top: 70px;
   right: 20px;
   background-color: #ffffff;
   border-radius: 10px;
@@ -119,7 +121,6 @@
 .dropdown-item:hover {
   opacity: 0.5;
   cursor: pointer;
-  
 }
 
 .logout {
@@ -128,10 +129,8 @@
 }
 
 .logout:hover {
-  
   cursor: pointer;
   opacity: 0.5;
-  
 }
 
 .dropdown-icon {

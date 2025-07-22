@@ -1,20 +1,12 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import "../css/login.css";
 import { login } from "../services/Api";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState("");
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state?.message) {
-      setMessage(location.state.message);
-      setTimeout(() => setMessage(""), 2000);
-    }
-  }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,13 +15,11 @@ const Login = () => {
 
       localStorage.setItem("token", res.data.data);
 
-      console.log(res.data.errors.msg);
-
-      alert(res.data.message);
+      console.log(res.data.errors);
+      toast.success(res.data.message);
       setEmail("");
       setPassword("");
     } catch (err) {
-      console.log("errrrr", err);
       const errorResponse = err.response?.data;
       console.log("errorResponse", errorResponse);
       if (errorResponse?.errors) {
@@ -39,8 +29,11 @@ const Login = () => {
           newErrors[err.path] = err.msg;
         });
         setErrors(newErrors);
-      } else {
-        setMessage("Something went wrong");
+       
+      }  else if(errorResponse?.error){
+          toast.error(errorResponse.error);
+        }else {
+        toast.error("Something went wrong");
       }
     }
   };
@@ -49,15 +42,6 @@ const Login = () => {
     <div className="main-container">
       <h1 className="login-text">Login</h1>
 
-      {message && (
-        <div
-          className={`popup-message ${
-            message.toLowerCase().includes("success") ? "success" : "error"
-          }`}
-        >
-          {message}
-        </div>
-      )}
 
       <form className="form-login" onSubmit={handleSubmit}>
         <input

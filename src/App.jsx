@@ -1,4 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import './App.css';
 import Dashbord from './components/Dashbord.jsx';
 import Navbar from './components/Navbar.jsx';
@@ -8,6 +10,16 @@ import Register from './pages/Register';
 const App = () => {
   return (
     <>
+     <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
     <Navbar></Navbar>
      

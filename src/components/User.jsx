@@ -1,11 +1,62 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiEdit, FiFilter, FiSearch, FiTrash } from "react-icons/fi";
+import { toast } from "react-toastify";
 import "../css/user.css";
-
+import { addUser, getUser } from "../services/Api";
 const User = () => {
   const [showPopup, setShowpopup] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
-   const fileInputRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [salary, setSalary] = useState("");
+  const [position, setPosition] = useState("Employee");
+  const [errors, setErrors] = useState({});
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
+  const [dropdown, setDropdown] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("salary", salary);
+    formData.append("position", position);
+    formData.append("photo", fileInputRef.current.files[0]);
+
+    //  ADD USER .............................
+    try {
+      const res = await addUser(formData);
+
+      setName("");
+      setEmail("");
+      setPosition("");
+      setSalary("");
+      setPreviewImage(null);
+      toast.success(res.data.message);
+    } catch (err) {
+      const errorResponse = err.response?.data;
+
+      console.log("erorrrrrr", errorResponse);
+      if (errorResponse.data) {
+        const newError = {};
+        errorResponse.data.forEach((err) => {
+          newError[err.path] = err.msg;
+        });
+        setErrors(newError);
+      } else if (errorResponse?.error) {
+        console.log("erorrrrrrrrr", errorResponse.error);
+        toast.error(errorResponse.error);
+        setTimeout(() => setMessage(""), 4000);
+      } else {
+        toast.error("Something went wrong");
+        setTimeout(() => setMessage(""), 4000);
+        setTimeout(() => setMessage(""), 4000);
+      }
+    }
+  };
 
   const handleAddUser = () => {
     setShowpopup(true);
@@ -18,10 +69,43 @@ const User = () => {
     }
   };
 
-   const handleImageClick = () => {
+  const handleImageClick = () => {
     fileInputRef.current.click();
   };
 
+  //  GET USER ......................
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await getUser();
+        setUsers(res.data);
+        console.log("user", users);
+      } catch (err) {
+        console.error("Error fetching users", err);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  // FILTER BY SEARCH...................
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+  const handleDropdown = (e) => {
+    setDropdown(e.target.value);
+  };
+
+  const filterUser = users.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase());
+
+    const matchesDropdown =
+      dropdown === "All Roles" || dropdown === "" || user.position === dropdown;
+
+    return matchesSearch && matchesDropdown;
+  });
 
   return (
     <div className="user-page">
@@ -38,18 +122,20 @@ const User = () => {
         </div>
       </div>
 
-      {/* POP UP BOX  */}
+      {/* POP UP BOX  FOR ADD USER  */}
 
       {showPopup && (
-        <div className="modal-overlay"  onClick={() => {
-                    setShowpopup(false);
-                    setPreviewImage(null);
-                  }}>
+        <div
+          className="modal-overlay"
+          onClick={() => {
+            setShowpopup(false);
+            setPreviewImage(null);
+            setErrors("");
+          }}
+        >
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h2>Add New User</h2>
-            <form className="modal-form">
-
-                
+            <form className="modal-form" onSubmit={handleSubmit}>
               <div className="image-upload" onClick={handleImageClick}>
                 {previewImage ? (
                   <img src={previewImage} alt="Preview" />
@@ -67,26 +153,46 @@ const User = () => {
 
               <label>
                 Name
-                <input type="text" placeholder="Enter name" />
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter name"
+                />
               </label>
+              {errors.name && <p className="error-text">{errors.name}</p>}
               <label>
                 Email
-                <input type="email" placeholder="Enter email" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter email"
+                />
               </label>
+              {errors.email && <p className="error-text">{errors.email}</p>}
               <label>
                 Salary
-                <input type="email" placeholder="Enter Salary" />
+                <input
+                  type="number"
+                  value={salary}
+                  onChange={(e) => setSalary(e.target.value)}
+                  placeholder="Enter Salary"
+                />
               </label>
+              {errors.salary && <p className="error-text">{errors.salary}</p>}
               <label>
                 Position
-                <select>
-                  <option>Employee</option>
-                  <option>Hr</option>
-                  <option>Intern</option>
+                <select
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                >
+                  <option value="Employee">Employee</option>
+                  <option value="Hr">Hr</option>
+                  <option value="Intern">Intern</option>
                 </select>
               </label>
 
-            
               <div className="modal-actions">
                 <button
                   type="button"
@@ -94,6 +200,11 @@ const User = () => {
                   onClick={() => {
                     setShowpopup(false);
                     setPreviewImage(null);
+                    setErrors("");
+                    setName("");
+                    setEmail("");
+                    setPosition("");
+                    setSalary("");
                   }}
                 >
                   Cancel
@@ -107,7 +218,6 @@ const User = () => {
         </div>
       )}
 
-
       {/* SEARCH BAR AND FILTER  */}
 
       <div className="filter-bar">
@@ -116,6 +226,8 @@ const User = () => {
           <input
             type="text"
             placeholder="Search users by name or email..."
+            value={search}
+            onChange={handleSearch}
             className="search-input"
           />
         </div>
@@ -124,48 +236,70 @@ const User = () => {
           {" "}
           <FiFilter className="filter-icon" />
         </span>
-        <select className="role-dropdown">
+        <select
+          value={dropdown}
+          onChange={handleDropdown}
+          className="role-dropdown"
+        >
           <option>All Roles</option>
-          <option>Admin</option>
-          <option>Editor</option>
-          <option>User</option>
+          <option>Intern</option>
+          <option>Hr</option>
+          <option>Employee</option>
         </select>
       </div>
 
-
-
       {/* TABLE DATA */}
-
 
       <div className="user-table">
         <table>
-            <thead>
-                <tr>
-                    <th>Photo</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Salary</th>
-                    <th>Position</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Salary</th>
+              <th>Position</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
-            <tbody>
-                <tr>
-                    <td> <img src="https://via.placeholder.com/40" alt="User" className="table-avatar" /></td>
-                    <td>John Doe</td>
-                    <td>john@example.com</td>
-                    <td>$5000</td>
-                    <td>Employee</td>
-                    <td>
-                      <FiEdit className="table-icon edit-icon" title="Edit" />
-                      <FiTrash className="table-icon delete-icon" title="Delete" />
-                    </td>
+          <tbody>
+            {users && users.length > 0 ? (
+              filterUser.map((user) => (
+                <tr key={user._id}>
+                  <td>
+                    <img
+                      src={
+                        user.photo
+                          ? `http://localhost:5000/uploads/${user.photo}`
+                          : "https://via.placeholder.com/40"
+                      }
+                      alt={user.name}
+                      className="table-avatar"
+                    />
+                  </td>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.salary}</td>
+                  <td>{user.position}</td>
+                  <td>
+                    <FiEdit className="table-icon edit-icon" title="Edit" />
+                    <FiTrash
+                      className="table-icon delete-icon"
+                      title="Delete"
+                    />
+                  </td>
                 </tr>
-
-            </tbody>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center" }}>
+                  No users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
         </table>
-
       </div>
     </div>
   );

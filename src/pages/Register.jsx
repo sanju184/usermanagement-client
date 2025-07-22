@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "../css/login.css";
 import { register } from "../services/Api";
+
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-    setMessage("");
+  
 
     try {
       const res = await register(email, password, name);
@@ -22,14 +23,9 @@ const Register = () => {
       setEmail("");
       setPassword("");
       setName("");
-
-      navigate("/login", {
-        state: {
-          message: res.data.messages || "Registered successfully",
-        },
-      });
+      toast.success(res.data.messages);
+      navigate("/login");
     } catch (err) {
-      console.log("errrrr", err);
       const errorResponse = err.response?.data;
 
       if (errorResponse?.errors) {
@@ -39,11 +35,10 @@ const Register = () => {
         });
         setErrors(newErrors);
       } else if (errorResponse?.error) {
-        setMessage(errorResponse.error);
-        setTimeout(() => setMessage(""), 4000);
+        toast.error(errorResponse.error);
       } else {
-        setMessage("Something went wrong");
-        setTimeout(() => setMessage(""), 4000);
+        toast.error("Something went wrong");
+        
       }
     }
   };
@@ -51,16 +46,6 @@ const Register = () => {
   return (
     <div className="main-container">
       <h1 className="login-text">Sign Up</h1>
-
-      {message && (
-        <div
-          className={`popup-message ${
-            message.toLowerCase().includes("success") ? "success" : "error"
-          }`}
-        >
-          {message}
-        </div>
-      )}
 
       <form className="form-login" onSubmit={handleSubmit}>
         <input
