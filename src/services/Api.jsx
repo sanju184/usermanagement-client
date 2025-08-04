@@ -14,3 +14,11 @@ export  const addUser = (formData)=>{
 export  const getUser = ()=>{
    return api.get('/employees');
 }
+
+export  const updateUser = (id,data)=>{
+   return api.put(`/employees/${id}`,data);
+}
+
+export  const deleteUser = (id)=>{
+   return api.delete(`/employees/${id}`);
+}

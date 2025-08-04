@@ -77,3 +77,171 @@
   color: #16a34a;
   margin-left: 6px;
 }
+
+.bottom-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  min-width: 280px;
+  margin-top: 20px;
+}
+.card1 {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  min-width: 280px;
+  gap: 20px;
+  flex: 1;
+  /* Cards grow equally and wrap as needed */
+}
+
+.recent-user {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  
+}
+
+.card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-item-detail {
+  display: flex;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2;
+}
+
+.icon-box-user {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: white;
+  background-color: #3b82f6;
+  margin-right: 15px;
+}
+
+.user-info h3 {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+user-info p {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 400px;
+}
+
+.role-badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 12px;
+  text-transform: lowercase;
+  border-radius: 8px;
+  background: #f0f5ff;
+  color: #3d7eff;
+}
+
+.view-all-btn {
+  min-width: 100%;
+  padding: 10px 15px;
+  background: #f9fafb;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #d1d5db;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-all-btn:hover {
+  background: #e9ebeb;
+}
+
+.card-item.newuser {
+  background-color: #951f1f;
+  padding: 12px 20px;
+  border-radius: 12px;
+}
+
+/* SECOND CARD...................... */
+
+.card-item.newuser {
+  background-color: #f0f7ff;
+  padding: 12px 20px;
+  border-radius: 12px;
+}
+
+.card-item.manageuser {
+  background-color: #f4fdf7;
+  padding: 12px 20px;
+  border-radius: 12px;
+}
+
+.card-item.edituser {
+  background-color: #f9f5ff;
+  padding: 12px 20px;
+  border-radius: 12px;
+}
+.card-item.newuser:hover {
+  background-color: #e0efff;
+}
+
+.card-item.manageuser:hover {
+  background-color: #e0f7ea;
+}
+
+.card-item.edituser:hover {
+  background-color: #f0eaff;
+}
+
+.icon-edit {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #8b5cf6;
+  margin-right: 15px;
+}
+
+.icon-manage {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #059669;
+  margin-right: 15px;
+}
+
+.icon-add {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #2563eb;
+  margin-right: 15px;
+}

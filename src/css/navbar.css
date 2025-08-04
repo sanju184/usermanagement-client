@@ -51,22 +51,15 @@
   transition: all 0.3s ease;
 }
 
-/* Dashboard styled like button */
-.navbar-right a[href="/dashbord"] {
+
+/* Dashboard and Users NavLink styles */
+.navbar-right a[href="/dashboard"],
+.navbar-right a[href="/users"] {
   color: #374151;
 }
 
-.navbar-right a[href="/dashbord"]:hover,
-.navbar-right a[href="/dashbord"].active {
-  background-color: #d0e2ff;
-  color: #1d4ed8;
-}
-
-/* Manage Users / Other Links */
-.navbar-right a[href="/ users"] {
-  color: #374151;
-}
-
+.navbar-right a[href="/dashboard"]:hover,
+.navbar-right a[href="/dashboard"].active,
 .navbar-right a[href="/users"]:hover,
 .navbar-right a[href="/users"].active {
   background-color: #d0e2ff;

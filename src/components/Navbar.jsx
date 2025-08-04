@@ -31,7 +31,7 @@ const Navbar = () => {
           end
           className={({ isActive }) => (isActive ? "active" : "")}
         >
-          Dashbord
+          Dashboard
         </NavLink>
         <NavLink
           to="/users"

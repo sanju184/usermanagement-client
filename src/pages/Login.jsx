@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "../css/login.css";
 import { login } from "../services/Api";
@@ -7,6 +7,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+
+  const navigation = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +21,8 @@ const Login = () => {
       toast.success(res.data.message);
       setEmail("");
       setPassword("");
+      navigation("/dashboard");
+
     } catch (err) {
       const errorResponse = err.response?.data;
       console.log("errorResponse", errorResponse);

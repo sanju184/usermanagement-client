@@ -1,71 +1,94 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FiEdit, FiFilter, FiSearch, FiTrash } from "react-icons/fi";
 import { toast } from "react-toastify";
 import "../css/user.css";
-import { addUser, getUser } from "../services/Api";
+import { addUser, deleteUser, getUser, updateUser } from "../services/Api";
 const User = () => {
   const [showPopup, setShowpopup] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [salary, setSalary] = useState("");
-  const [position, setPosition] = useState("Employee");
+  const [position, setPosition] = useState("Select Position");
   const [errors, setErrors] = useState({});
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [dropdown, setDropdown] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editUserId, setEditUserId] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
 
+    const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
     formData.append("salary", salary);
     formData.append("position", position);
-    formData.append("photo", fileInputRef.current.files[0]);
+    if (fileInputRef.current.files[0]) {
+      formData.append("photo", fileInputRef.current.files[0]);
+    }
 
-    //  ADD USER .............................
+
+    // Only append photo if a new file is selected
+
+    //  ADD USER  AND EDIT USER BOTH.............................
     try {
-      const res = await addUser(formData);
-
+      if (isEditing && editUserId) {
+        const res = await updateUser(editUserId, formData);
+        console.log("response", res);
+        toast.success(res.data.message);
+      } else {
+        const res = await addUser(formData);
+        toast.success(res.data.message);
+      }
+      setShowpopup(false);
       setName("");
       setEmail("");
       setPosition("");
       setSalary("");
+      setErrors("");
+      setEditUserId(null);
+      setIsEditing(false);
       setPreviewImage(null);
-      toast.success(res.data.message);
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // clear file input
+      }
+      // Always refresh users after update/add
+      await fetchUsers();
     } catch (err) {
       const errorResponse = err.response?.data;
-
-      console.log("erorrrrrr", errorResponse);
-      if (errorResponse.data) {
+      if (errorResponse?.data) {
         const newError = {};
         errorResponse.data.forEach((err) => {
           newError[err.path] = err.msg;
         });
         setErrors(newError);
       } else if (errorResponse?.error) {
-        console.log("erorrrrrrrrr", errorResponse.error);
         toast.error(errorResponse.error);
-        setTimeout(() => setMessage(""), 4000);
       } else {
         toast.error("Something went wrong");
-        setTimeout(() => setMessage(""), 4000);
-        setTimeout(() => setMessage(""), 4000);
       }
     }
   };
 
   const handleAddUser = () => {
     setShowpopup(true);
+    setIsEditing(false);
+    setEditUserId(null);
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setPreviewImage(URL.createObjectURL(file));
+      setSelectedFile(file);
+    } else {
+      setPreviewImage(null);
+      setSelectedFile(null);
     }
   };
 
@@ -73,19 +96,20 @@ const User = () => {
     fileInputRef.current.click();
   };
 
-  //  GET USER ......................
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await getUser();
-        setUsers(res.data);
-        console.log("user", users);
-      } catch (err) {
-        console.error("Error fetching users", err);
-      }
-    };
-    fetchUsers();
+  //  Fetch USER ......................
+
+  const fetchUsers = useCallback(async () => {
+    try {
+      const res = await getUser();
+      setUsers(res.data.reverse());
+    } catch (err) {
+      console.error("Failed to fetch users", err);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   // FILTER BY SEARCH...................
 
@@ -107,6 +131,37 @@ const User = () => {
     return matchesSearch && matchesDropdown;
   });
 
+  // EDIT BUTTON.....................
+
+  const handleEditButton = (user) => {
+    setShowpopup(true);
+    setIsEditing(true);
+    setEditUserId(user._id);
+    setName(user.name);
+    setEmail(user.email);
+    setSalary(user.salary);
+    setPosition(user.position);
+    setPreviewImage(user.photo ? `http://localhost:5000/uploads/${user.photo}` : null);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handlDeletButton =async(user)=>{
+
+    const confirmDelete = window.confirm(`Are you sure you want to delete ${user.name}?`);
+    if (!confirmDelete) return;
+
+    try {
+      const res = await deleteUser(user._id);
+      toast.success(res.data.message);
+      await fetchUsers();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
     <div className="user-page">
       <div className="up-content">
@@ -122,7 +177,7 @@ const User = () => {
         </div>
       </div>
 
-      {/* POP UP BOX  FOR ADD USER  */}
+      {/* POP UP BOX  FOR ADD USER AND EDIT USER */}
 
       {showPopup && (
         <div
@@ -187,11 +242,16 @@ const User = () => {
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                 >
+                  {" "}
+                  <option value="">Select Position</option>
                   <option value="Employee">Employee</option>
                   <option value="Hr">Hr</option>
                   <option value="Intern">Intern</option>
                 </select>
               </label>
+              {errors.position && (
+                <p className="error-text">{errors.position}</p>
+              )}
 
               <div className="modal-actions">
                 <button
@@ -210,7 +270,7 @@ const User = () => {
                   Cancel
                 </button>
                 <button type="submit" className="submit-btn">
-                  Add User
+                  {isEditing ? "Edit" : "Add User"}
                 </button>
               </div>
             </form>
@@ -276,6 +336,7 @@ const User = () => {
                       }
                       alt={user.name}
                       className="table-avatar"
+                     
                     />
                   </td>
                   <td>{user.name}</td>
@@ -283,9 +344,14 @@ const User = () => {
                   <td>{user.salary}</td>
                   <td>{user.position}</td>
                   <td>
-                    <FiEdit className="table-icon edit-icon" title="Edit" />
+                    <FiEdit
+                      className="table-icon edit-icon"
+                      onClick={() => handleEditButton(user)}
+                      title="Edit"
+                    />
                     <FiTrash
                       className="table-icon delete-icon"
+                      onClick={() => handlDeletButton(user)}
                       title="Delete"
                     />
                   </td>
