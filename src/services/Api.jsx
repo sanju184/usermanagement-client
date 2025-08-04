@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = axios.create({ baseURL: "http://localhost:5000/api" });
+const api = axios.create({ baseURL: "https://usermanagement-backend-1-w59j.onrender.com/api" });
 
 export const login = (email, password) =>
   api.post("/auth/login", { email, password });
