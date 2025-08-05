@@ -331,7 +331,7 @@ const User = () => {
                     <img
                       src={
                         user.photo
-                          ? `http://localhost:5000/uploads/${user.photo}`
+                          ? `https://usermanagement-backend-1-w59j.onrender.com/uploads/${user.photo}`
                           : "https://via.placeholder.com/40"
                       }
                       alt={user.name}
